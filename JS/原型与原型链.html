@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <script>
+
+    function Person() {}
+
+    Person.prototype.name = 'Ben'
+    Person.prototype.age = 28
+    Person.prototype.job = 'no job'
+    Person.prototype.sayName = function() {
+      // alert(this.name)
+      console.log('say name:',this.name)
+    }
+
+    // 构造函数的prototype是他的原型对象，原型对象上的属性和方法可以被子孙继承和使用
+
+    var person1 = new Person()
+    person1.sayName()
+
+    var person2 = new Person()
+    person2.sayName()
+
+    // console.log(person1.sayName === person2.sayName)
+
+
+    // console.log('xiao p:',person1.__proto__)
+    // console.log(Person.prototype === person1.__proto__) // true
+    // console.log(person1.constructor === Person && Person.prototype.constructor === person1.__proto__.constructor) // true
+
+    // 构造函数的原型对象就是他所实例化的对象的__proto__
+
+    // 构造函数的prototype还有一个隐性属性constructor，他指向这个构造函数本身
+    // 构造函数的实例化对象中也有constrcutor. 他指向构造函数本身
+    // 而这个构造函数所实例化的对象的__proto__中也有constructor，这个constructor也是指向构造函数本身
+
+    // 为什么person1有constructor属性并且指向Person呢？因为person1是Person的实例
+    // 为什么Person.prototype也有constructor并指向Person呢？因为可以把Person.prototype看成Person自身创建时附带创建的实例
+    // var A = new Person();
+    // Person.prototype = A
+
+    // 结论：原型对象Person.prototype 是 构造函数Person的一个实例
+
+    // -------------------------------------------------------------------
+    
+    // console.log(typeof Person.prototype)  // object
+    // console.log(typeof Function.prototype)  // function
+    // console.log(typeof Object.prototype)  // object
+    // console.log(typeof Function.prototype.prototype)  // null
+
+    // const A = new Function()
+    // console.log('A:',A.constructor) // Function
+    
+    // 所有通过new Function创建的对象都是函数对象而不是实例对象，因为他本身是个函数，所以Function.prototype是函数对象，不是原型对象
+    
+    // -------------------------------------------------------------------
+
+    
+
+
+  </script>
+
+</body>
+</html>

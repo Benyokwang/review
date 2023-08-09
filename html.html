@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /*
+      [喊 7的次数重排][重点]
+      [喊7的次数重排]
+      喊7是一个传统的聚会游戏，N个人围成一圈，按顺时针从1到N编号，编号为1的人从1开始喊数，下一个人喊的数字为上一个人的数字加1，但是当将要喊出来的者字是7的倍数或者数字本身含有7的话，不能把这个数字直接喊出来，而是要喊”过”假定玩这个游戏的N个人都没有失误地在正确的时机减了“”过”，当城到数字K时2可以统计每个人喊"过”的次数。
+      现给定一个长度为N的数组，存储了打乱顺序的每个人喊 过”的次数，请把它还原成正确的顺序，即数组的第个元素存储编号的人喊”过"的次数.
+      输入描述 :
+        输入为一行，为空格分隔的喊”过”的次数，注意K并不提供，K不超过200，而数字的个数即为N。 '0 1 0'
+      输出描述:
+        输出为一行，为顺序正确的喊”过”的次数，也由空格分隔 '1 0 0'
+
+      难点：
+      1. 正则（去除空格）
+      2. 循环遍历的初始数值
+      3. 数组fill方法
+
+    */
+
+      const nums = "2 0 1 0 0";
+
+      function countNumber(nums) {
+        if (!nums) return;
+        // 1. 去除空格,转数组
+        let _nums = nums.replace(/\s*/g, ""),
+          _numsArr = _nums.split("");
+
+        // 2. 获取参与人数
+        let people = _numsArr.length;
+
+        // 3. 获取“过”了多少次
+        let passCount = 0;
+        for (var i = 0; i < _numsArr.length; i++) {
+          if (Number(_nums[i]) > 0) {
+            passCount += Number(_nums[i]);
+          }
+        }
+
+        // 4. 初始化一个人数数组 每人均为0次
+        let initCount = 0;
+        let initPersonArr = new Array(people).fill(0);
+        for (var i = 1; i < 200; i++) {
+          if (i % 7 === 0 || String(i).includes("7")) {
+            // 7的倍数 or 包含数字7
+            let ii = i % people;
+            if (ii == 0) ii = people;
+            initPersonArr[ii - 1] += 1;
+            initCount++;
+          }
+          if (initCount === passCount) {
+            break;
+          }
+        }
+
+        console.log(initPersonArr);
+      }
+
+      /*
+      [最长子字符串的长度（一）]
+      给你一个字符串s，字符串s首尾相连形成一个环形，请你在环中找出'o'字符出现了偶次数最长子字符串的长度。
+      输入描述：
+        输入是遗传小写字母组成的字符串
+      输出描述：
+        输出是一个整数
+      备注：
+        1<=s.length<=5 x 10^5
+        s只包含小写英文字母
+
+      思路：统计o的次数 - 偶数次则字符串本身长度就是最长字符串长度，奇数次则去掉一个o后剩下的长度就是最长字符串
+    */
+      const letters = "xxxxoooooxxx";
+
+      function countLetter(letters) {
+        let len = letters.split("").filter((i) => i === "o").length;
+
+        if (len % 2 === 0) {
+          console.log(letters.length);
+        } else {
+          console.log(letters.length - 1);
+        }
+      }
+
+      /*
+      [字符统计及重排]
+      给出一个仅包含字母的字符串，不包含空格，统计字符串中各个字母（区分大小写）出现的次数，并按照字母出现次数从大到小的顺序输出各个字母及其出现次数。如果次数相同，按照自然顺序进行排序，且小写字母在大写字母前
+      输入描述：
+        输入一行，为一个仅包含字母的字符串
+      输出描述：
+        按照字母出现次数从大到小的顺序输出各个字母和字母次数，用英文分号分隔，注意末尾的分号；字母和次数间用英文冒号分隔
+      示例：
+        xyxyXX => x:2;y:2;X:2;
+        abababb => b:4;a:3;
+
+      难点：
+        1. 英文字母排序 js默认采用ascii字符方式，从小到大 => a<b<c (无论大小写)
+        2. 英文字母大小写判断，采用ascii字符方式，str.charCodeAt()  65 <= 大写 <= 90  97 <= 小写 <= 122
+        3. sort() 用法
+    */
+
+      const egStr = "ababcccccb";
+
+      function sortStr(str) {
+        let countObj = {};
+
+        for (let i = 0; i < str.length; i++) {
+          if (!countObj[str[i]]) {
+            countObj[str[i]] = 1;
+          } else {
+            countObj[str[i]] += 1;
+          }
+        }
+
+        // 1. obj value排序输出
+        let makeArr = [];
+        for (var key in countObj) {
+          makeArr.push(`${key}:${countObj[key]}`);
+        }
+
+        makeArr.sort((next, curr) => {
+          let nl = next.split(":")[0];
+          let nn = Number(next.split(":")[1]);
+          let cl = curr.split(":")[0];
+          let cn = Number(curr.split(":")[1]);
+          if (nn > cn) {
+            // 下一个次数大于当前，下一个在前
+            return -1;
+          } else if (nn === cn) {
+            // 下一个次数等于当前的次数，判断字母顺序 - 字母顺序排序，相同字母小写在前
+            let nl_isBig = nl.charCodeAt() > 90 ? false : true;
+            let cl_isBig = cl.charCodeAt() > 90 ? false : true;
+            if (nl.charCodeAt() > cl.charCodeAt()) {
+              // 下一个字母顺序大于当前字母顺序
+              if (
+                (nl_isBig && cl_isBig) ||
+                (!nl_isBig && cl_isBig) ||
+                (!nl_isBig && !cl_isBig)
+              ) {
+                // 同是小写
+                return 1;
+              } else if (nl_isBig && !cl_isBig) {
+                return -1;
+              }
+            }
+          } else if (nn < cn) {
+            return 1;
+          }
+        });
+
+        const makeStr = makeArr.join(";");
+
+        console.log(makeStr);
+      }
+
+      /*
+      [数组拼接]
+      现在有多组整数数组，需要将它们合并成一个新的数组。合并规则，从每个数组里按顺序取出固定长度的内容合并到新的数组中，取完的内容会删掉，如果该行不足固定长度或者已经为空，则直接取出剩余部分的内容放到新的数组中，继续下一行
+      输入描述：
+        第一行是每次读取的固定长度，0 < 长度 < 10
+        第二行是整数数组的数目，0 < 数目 < 1000
+        第3-n行是需要合并的数组，不同的数组用回车换行分隔，数组内部用逗号分隔，最大不超过100个元素
+      输出描述：
+        输出一个新的数组，用逗号分隔
+
+      难点：
+        1. 矩阵
+        2. 题目的输入格式
+        3. 多个参数接参（函数科里化）
+    */
+
+      const one = 3,
+        two = 2,
+        arr1 = [2, 5, 6, 7, 9, 5, 7],
+        arr2 = [1, 7, 4, 3, 4];
+
+      function concatArrays(readLen, total, ...arrs) {
+        // 合并传入数组，成为构造数组
+        const concats = [...arrs];
+
+        let result = [];
+
+        let counted = 0; // 数组切完计数器
+        for (let i = 0, c = concats; i < c.length; i++) {
+          if (counted === total) break;
+          if (c[i].length) {
+            // 如果目标数组中还有长度，则继续切
+            result = result.concat(c[i].splice(0, readLen));
+          } else {
+            // 目标数组没有长度了，则counted+1
+            counted += 1;
+          }
+          if (i === c.length - 1 && counted != total) {
+            // 循环完但没切完，重新循环
+            i = -1;
+          }
+        }
+
+        console.log("result=>>>", result);
+      }
+
+      /*
+      [按索引范围翻转文章片段]
+      输入一个英文文章片段，翻转指定区间的单词顺序，标点符号和普通字母一样处理，例如输入字符串"i am a developer", 区间[0,3]，则输出"developer. a am i".
+      输入描述：
+        使用换行隔开三个参数，第一个参数为英文文章内容即英文字符串，第二个参数为翻转起始单词下标（下标从0开始），第三个参数为结束单词下标。
+      输出描述：
+        翻转后的英文文章片段所有单词之间以应该半角空格分隔进行输出。
+
+      输入：
+        I am a developer.
+        1
+        2
+      输出：
+      I a am developer.
+
+    */
+      const sentence = "I am a developer.",
+        sIdx = 1,
+        eIdx = 2;
+
+      function reversSentence(str, start, end) {
+        // 以空格切割字符串
+        let strArr = str.split(" ");
+
+        let temp = strArr[start];
+        strArr[start] = strArr[end];
+        strArr[end] = temp;
+        console.log(strArr.join(" "));
+      }
+
+      /*
+      [猜数字]
+      一个人设定一组四码的数字作为谜底，另一方猜，每猜出一个数，出数者就要根据这个数字给出提示，提示以XAYB形式呈现，直到猜中为止。其中X表示位置正确的个数（数字正确且位置正确），而Y表示数字正确而位置不对的数的个数。
+      例如：当谜底为8123，而猜迷者猜1052时，出题者必须提示0A2B。
+      例如：当谜底为5637，而猜谜者猜4931时，出题者必须提示1A0B。
+      当前已知N组猜谜者的数字与提示，如果答案确定，请输出答案，不确定则输出NA。
+      输入描述：
+        第一行输入一个正整数N，0 < N < 100,
+        接下来N行，每一行包含一个猜测的数字与提示结果。
+      输出描述：
+        输出最后的答案，答案不确定时输出NA。
+    
+    */
+
+      function guessNumber() {}
+
+      /*
+      [深度遍历、回溯]
+      输入一个长度为 n 字符串，打印出该字符串中字符的所有排列，你可以以任意顺序返回这个字符串数组。例如输入字符串ABC,则输出由字符A,B,C所能排列出来的所有字符串ABC,ACB,BAC,BCA,CBA和CAB。
+      输入描述：
+        "ABC"
+      输出描述：
+        "ABC" "ACB" "BAC" "BCA" "CBA" "CAB"
+    */
+
+      function permutation(str) {
+        // 将传入字符串改成数组格式
+        let arr = str.split(""); // ['a','b','c']
+        // 定义一个结果数组
+        let res = [];
+
+        // 定义一个用以交换位置的函数
+        function swap(a, b) {
+          // 如果索引a=索引b，则无需交换
+          if (a === b) return;
+          [arr[a], arr[b]] = [arr[b], arr[a]];
+        }
+
+        // 定义一个深度遍历递归函数, p - 起始索引, q - 被遍历数组的最大索引
+        function dfs(p, q) {
+          if (p === q) {
+            // 如果遍历的长度等于当前索引，则已达当前分支最低端，即输出结果
+            res.push(arr.join(""));
+            return;
+          }
+          // 遍历arr
+          for (let i = p; i <= q; i++) {
+            // 位置交换
+            swap(p, i);
+            // 深度遍历当前arr
+            dfs(p + 1, q);
+            // 回溯被交换位置的元素
+            swap(p, i);
+          }
+        }
+
+        dfs(0, arr.length - 1);
+
+        // 去重
+        res = [...new Set(res)];
+
+        console.log("res=>", res);
+      }
+
+      // permutation("ABC")
+
+      /*
+      [最大矩阵和]
+      给定一个二维整数矩阵，要在这个矩阵中选出一个子矩阵，使得这个子矩阵内所有的数字和尽量最大，我们把这个子矩阵称为和最大子矩阵，子矩阵选取原则是原矩阵中一块相互连续的矩形区域。
+      输入描述：
+        输入的第一行包含2个整数n,m (1 <= n, m <= 10),表示一个n行m列的矩阵，每行有m个整数，同一行中，每2个数字之间有一个空格，最后一个数字后面没有空格，所有数字在[-1000,1000]之间。
+      输出描述：
+        输出一行一个数字，表示选出的和最大矩阵内所有的数字和
+
+      eg:
+       3 4
+       [
+        [-3,5,-1,5],
+        [2,4,-2,4],
+        [-1,3,-1,3]
+       ]
+    */
+
+      // Write your code here
+      const poke = "10-3 3";
+
+      const poke1 = poke.split("-")[0].split(" ");
+      const poke2 = poke.split("-")[1].split(" ");
+
+      const card = [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A",
+        "2",
+        "joker",
+        "JOKER",
+      ];
+
+      // 个子、1 3 4 5 6
+      // 对子、1 1 2 3 4
+      // 顺子、3 4 5 6 7
+      // 三张、3 3 3
+      // 炸弹、4 4 4 4
+      // 王炸
+
+      // console.log(poke1,poke2) // [4,4,4,4] ['joker','JOKER']
+
+      // 判断是否含有炸弹
+      function hasBoom(poke) {
+        if (poke.length === 4 && poke.every((e) => e === poke[0])) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      // 比较手牌大小
+      function compare(poke1, poke2) {
+        let idx1 = card.findIndex((e) => e === poke1[0]);
+        let idx2 = card.findIndex((e) => e === poke2[0]);
+        return idx1 > idx2 ? 1 : 2;
+      }
+
+      if (
+        (poke1.length == 2 && poke1.includes("joker")) ||
+        (poke2.length == 2 && poke2.includes("joker"))
+      ) {
+        // 有一手是王炸
+        console.log(poke1.length == 2 ? poke1.join(" ") : poke2.join(" "));
+      }
+
+      // 手牌数量不同
+      if (poke1.length != poke2.length) {
+        // 判断其中一幅是不是有炸
+        if (hasBoom(poke1) || hasBoom(poke2)) {
+          console.log(hasBoom(poke1) ? poke1.join(" ") : poke2.join(" "));
+        } else {
+          // 两副手牌都没有炸，情况不同不比较
+          console.log("ERROR");
+        }
+      } else {
+        // 手牌数量相同
+        // if (hasBoom(poke1) && hasBoom(poke2)) {
+        // 两手牌都是炸弹，比较最小牌大小
+        console.log("????");
+        let result = compare(poke1, poke2);
+        console.log(result == 1 ? poke1.join(" ") : poke2.join(" "));
+        // }
+      }
+      
+
+      
+    </script>
+  </body>
+</html>

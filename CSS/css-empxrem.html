@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<Style>
+  /*
+    绝对长度单位：px
+    相对长度单位：
+      em: 相对父元素的font-size，如父元素font-size:14px，则1em = 14px
+  */
+  html {
+    font-size: 16px;
+  }
+  .box1 {
+    width: 200px;
+    height: 200px;
+    background-color: aqua;
+    font-size: 24px;
+  }
+  .span1 {
+    font-size: 1rem;
+  }
+  .box2 {
+    width: 200px;
+    height: 200px;
+    background-color: pink;
+    font-size: 12px;
+  }
+  .span2 {
+    font-size: 1em;
+  }
+</Style>
+<body>
+  <div class="box1">
+    aaa
+    <span class="span1">aaa</span>
+  </div>
+  <div class="box2">
+    aaa
+    <span class="span2">aaa</span>
+  </div>
+</body>
+</html>
